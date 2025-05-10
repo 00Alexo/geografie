@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBars, FaTimes, FaUser, FaCog, FaChartLine, FaSignOutAlt, FaBell } from 'react-icons/fa';
-// import logo from '../assets/logo.png';
-// import { useAuthContext } from '../Hooks/useAuthContext';
-// import { useLogout } from '../Hooks/useLogout';
+import { useAuthContext } from '../hooks/useAuthContext';
+import { useLogout } from '../hooks/useLogout';
 
 const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-    const user = null;
     const navigate = useNavigate();
-    // const { user } = useAuthContext();
-    // const { logout } = useLogout();
+    const { user } = useAuthContext();
+    const { logout } = useLogout();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -80,7 +78,7 @@ const NavBar = () => {
                         onClick={toggleProfileMenu}
                         className="flex items-center gap-2 px-3 py-2 text-white hover:bg-[#7091E6] rounded-lg transition-all"
                     >
-                        <span>{user.username}</span>
+                        <p className="text-xl">{user.username.charAt(0).toUpperCase() + user.username.slice(1).toLowerCase()}</p>
                         <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -90,7 +88,7 @@ const NavBar = () => {
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
                             <button 
                                 onClick={() => {
-                                    navigate('/signin');
+                                    logout();
                                 }}
                                 className="w-full text-left px-4 py-2 text-[#3D52A0] hover:bg-gray-50 flex items-center gap-2"
                             >
