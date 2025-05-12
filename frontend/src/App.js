@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import NotFound from './pages/NotFound';
+import PosteazaSubiect from './pages/PosteazaSubiect';
+import WelcomePage from './pages/WelcomePage';
 function App() {
   return (
     <BrowserRouter>
@@ -15,8 +17,12 @@ function App() {
             <Route path = "*" element={<NotFound/>}/>
             <Route path = "/WorldMap" element={<WorldMap/>}/>
             <Route path = "/" element={<HomePage/>}/>
+            <Route path = "/home" element={<HomePage/>}/>
+            <Route path = "/homepage" element={<HomePage/>}/>
+            <Route path = "/welcome" element={<WelcomePage/>}/>
             <Route path = "/signup" element={<SignUp/>}/>
             <Route path = "/signin" element={<SignIn/>}/>
+            <Route path = "/subiecte/posteaza" element={<PosteazaSubiect/>}/>
           </Routes>
         </div>
       </div>

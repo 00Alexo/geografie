@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBars, FaTimes, FaUser, FaCog, FaChartLine, FaSignOutAlt, FaBell } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUser, FaCog, FaChartLine, FaSignOutAlt, FaBell, FaChevronDown } from 'react-icons/fa';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useLogout } from '../hooks/useLogout';
 
 const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    const [isSubjectsMenuOpen, setIsSubjectsMenuOpen] = useState(false);
     const navigate = useNavigate();
     const { user } = useAuthContext();
     const { logout } = useLogout();
@@ -15,14 +16,36 @@ const NavBar = () => {
         setIsMenuOpen(!isMenuOpen);
         // Close other menus when opening this one
         setIsProfileMenuOpen(false);
+        setIsSubjectsMenuOpen(false);
     };
-
 
     const toggleProfileMenu = () => {
         setIsProfileMenuOpen(!isProfileMenuOpen);
         // Close other menus when opening this one
         setIsMenuOpen(false);
+        setIsSubjectsMenuOpen(false);
     };
+
+    const toggleSubjectsMenu = () => {
+        setIsSubjectsMenuOpen(!isSubjectsMenuOpen);
+        // Close other menus when opening this one
+        setIsMenuOpen(false);
+        setIsProfileMenuOpen(false);
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isSubjectsMenuOpen && !event.target.closest('.subjects-dropdown')) {
+                setIsSubjectsMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isSubjectsMenuOpen]);
 
     return (
         <nav className="fixed w-full h-[80px] bg-[#5f5fdf] shadow-md z-50 px-4 lg:px-8 flex items-center justify-between">
@@ -38,7 +61,37 @@ const NavBar = () => {
                 {/* Desktop Navigation Items */}
                 <div className="hidden lg:flex items-center gap-6">
                     <p onClick={() => navigate('/worldMap')} className="text-[#EDE8F5] text-lg cursor-pointer hover:text-white transition-colors">WorldMap</p>
-                    <p onClick={() => navigate('/subiecte')} className="text-[#EDE8F5] text-lg cursor-pointer hover:text-white transition-colors">Subiecte</p>                
+                    
+                    {/* Subjects Dropdown - Desktop */}
+                    <div className="relative subjects-dropdown">
+                        <button 
+                            onClick={toggleSubjectsMenu}
+                            className="flex items-center text-[#EDE8F5] text-lg cursor-pointer hover:text-white transition-colors"
+                        >
+                            Subiecte
+                            <FaChevronDown className={`ml-1 text-sm transition-transform ${isSubjectsMenuOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        
+                        {isSubjectsMenuOpen && (
+                            <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                                <Link 
+                                    to="/subiecte/geografie"
+                                    className="block px-4 py-2 text-[#3D52A0] hover:bg-gray-50"
+                                    onClick={() => setIsSubjectsMenuOpen(false)}
+                                >
+                                    Geografie
+                                </Link>
+                                <div className="border-b border-gray-200 my-1"></div>
+                                <Link 
+                                    to="/subiecte/posteaza"
+                                    className="block px-4 py-2 text-[#3D52A0] hover:bg-gray-50"
+                                    onClick={() => setIsSubjectsMenuOpen(false)}
+                                >
+                                    Posteaza un subiect
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
             
@@ -106,7 +159,36 @@ const NavBar = () => {
                 <div className="absolute top-[80px] left-0 right-0 bg-[#3D52A0] p-4 shadow-lg md:hidden z-40 border-t border-[#7091E6]">
                     <div className="flex flex-col gap-3">
                         <Link to="/worldMap" className="text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all">WorldMap</Link>
-                        <Link to="/subiecte" className="text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all">Subiecte</Link>
+                        
+                        {/* Subjects Dropdown - Mobile */}
+                        <div className="relative">
+                            <button 
+                                onClick={() => setIsSubjectsMenuOpen(!isSubjectsMenuOpen)}
+                                className="w-full text-left flex justify-between items-center text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all"
+                            >
+                                <span>Subiecte</span>
+                                <FaChevronDown className={`transition-transform ${isSubjectsMenuOpen ? 'rotate-180' : ''}`} />
+                            </button>
+                            
+                            {isSubjectsMenuOpen && (
+                                <div className="pl-4 mt-2 border-l border-[#7091E6] ml-4">
+                                    <Link 
+                                        to="/subiecte/geografie" 
+                                        className="block text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all"
+                                    >
+                                        Geografie
+                                    </Link>
+                                    <div className="border-b border-gray-200 my-1"></div>
+                                    <Link 
+                                        to="/subiecte/posteaza" 
+                                        className="block text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all"
+                                    >
+                                        Posteaza un subiect
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                        
                         <div className="border-t border-[#7091E6] my-2 py-2">
                             <Link to="/profile" className="text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all flex items-center gap-2">
                                 <FaUser /> My Profile
