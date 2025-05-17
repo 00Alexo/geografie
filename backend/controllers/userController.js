@@ -125,7 +125,20 @@ const signin = async(req, res)=>{
     }
 }
 
+const getUserData = async(req, res) =>{
+    try{
+        const user = await userModel.findOne({username: req.query.username.toLowerCase()}).select('-password');
+        
+        if(!user) return res.status(400).json({error: 'Contul nu exista!'});
+            res.status(200).json(user);
+    }catch(error){
+        console.error(error.message);
+        return res.status(400).json(error.message);
+    }
+}
+
 module.exports = {
     signup,
-    signin
+    signin,
+    getUserData
 }
