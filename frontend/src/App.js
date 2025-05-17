@@ -7,6 +7,8 @@ import SignIn from './pages/SignIn';
 import NotFound from './pages/NotFound';
 import PosteazaSubiect from './pages/PosteazaSubiect';
 import WelcomePage from './pages/WelcomePage';
+import Subiecte from './pages/Subiecte';
+import ViewSubiect from './pages/ViewSubiect';
 function App() {
   return (
     <BrowserRouter>
@@ -23,6 +25,8 @@ function App() {
             <Route path = "/signup" element={<SignUp/>}/>
             <Route path = "/signin" element={<SignIn/>}/>
             <Route path = "/subiecte/posteaza" element={<PosteazaSubiect/>}/>
+            <Route path="/subiecte/:materie" element={<Subiecte/>}/>
+            <Route path="/subiecte/:materie/:subiectId" element={<ViewSubiect/>}/>
           </Routes>
         </div>
       </div>

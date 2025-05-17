@@ -9,6 +9,10 @@ const {
     verifySubiect,
     deleteSubiect,
     getSubiect,
+    getPunctaje,
+    addToSubiect,
+    getRezolvariSubiect,
+    gradeSubiect
 } = require('../controllers/subiecteController');
 
 const router = express.Router();
@@ -27,5 +31,9 @@ router.get('/getSubiecteUnverified', getSubiecteUnverified);
 router.patch('/verifySubiect/:id', verifySubiect);
 router.delete('/deleteSubiect/:id', deleteSubiect);
 router.get('/getSubiect/:id', getSubiect);
+router.get('/getPunctaje/:id/:username', getPunctaje);
+router.post('/addToSubiect', addToSubiect);
+router.get('/getRezolvariSubiect/:id/:username', getRezolvariSubiect);
+router.post('/gradeSubiect', gradeSubiect);
 
 module.exports = router;

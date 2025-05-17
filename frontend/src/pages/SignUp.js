@@ -36,7 +36,7 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const { user } = useAuthContext()
+    const { user, isAuthReady } = useAuthContext();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -62,8 +62,18 @@ const SignUp = () => {
         await signup(username, email, password, confirmPassword);
     }
 
-    if(user)
-        return <NotFound/>
+        if (!isAuthReady) {
+        return (
+            <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#EDF8FD]">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#5F5FDF]"></div>
+            </div>
+        );
+    }
+    
+    // Dacă userul e autentificat, redirectionează
+    if (user) {
+        return <NotFound />;
+    }
     
     return (
         <div className="min-h-[calc(100vh-80px)] flex flex-col md:flex-row bg-[#EDF8FD]">

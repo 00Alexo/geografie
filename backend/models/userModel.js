@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    subiecte:{
+        type: Array,
+        required: true
+    }
 }, {timestamps: true});
 
 const userCollection = mongoose.model('User', userSchema);

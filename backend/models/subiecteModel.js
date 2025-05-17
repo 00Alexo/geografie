@@ -33,7 +33,11 @@ const SubiecteSchema = new mongoose.Schema({
   barem: {
     data: Buffer,
     contentType: String
-  }
+  },
+  categorii: {
+    type: [String],
+    required: true
+  },
 }, { timestamps: true });
 
 const SubiecteCollection = mongoose.model("SubiecteCollection", SubiecteSchema);

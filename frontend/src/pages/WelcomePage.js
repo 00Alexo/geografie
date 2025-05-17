@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import { Parallax } from '@react-spring/parallax';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Hero from '../components/home/Hero';
 import Features from '../components/home/Features';
 import HowItWorks from '../components/home/HowItWorks';
@@ -178,7 +178,11 @@ const WelcomePage = () => {
         }
       `}</style>
 
-      <Parallax ref={parallaxRef} pages={4} config={{ tension: 170, friction: 26 }}>
+      <Parallax 
+        ref={parallaxRef} 
+        pages={window.innerWidth < 768 ? 2 : 4} 
+        config={{ tension: 170, friction: 26 }}
+      >
         {/* Background Elements */}
         <Background 
           stars={stars} 
@@ -219,15 +223,15 @@ const WelcomePage = () => {
 
       {/* Fixed action button */}
         <div className="fixed bottom-10 right-10 z-[9999]">
-            <a 
-                href="/product" 
+            <Link 
+                to="/signup" 
                 className="bg-[#5F5FDF] text-white px-10 py-5 rounded-xl text-xl font-medium hover:bg-[#4747A9] transition-all shadow-lg flex items-center"
             >
                 Get Started
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
-            </a>
+            </Link>
         </div>
     </div>
   );
