@@ -37,7 +37,6 @@ const HomePage = () => {
         fetchUserData();
     }, [user]);
     
-    // Dacă starea de autentificare nu este încă gata, afișăm un loader
     if (!isAuthReady || loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#f5f7ff]">
@@ -46,7 +45,6 @@ const HomePage = () => {
         );
     }
     
-    // Pentru utilizatori neautentificați afișăm WelcomePage
     if (!user) {
         return <WelcomePage />;
     }
@@ -65,7 +63,7 @@ const HomePage = () => {
         { id: 10, name: "Vlad Georgescu", school: "Colegiul Național Cantemir Vodă", score: 750, solved: 28 },
     ];
     
-    // Date mock pentru clasament Settera (jocul cu hărți)
+    // Date mock pentru clasament Settera
     const setteraLeaderboard = [
         { id: 1, name: "Tudor Andrei", school: "Colegiul Național Ion Luca Caragiale", score: 12500, maps: 45 },
         { id: 2, name: "Sofia Diaconu", school: "Colegiul Național Spiru Haret", score: 11800, maps: 42 },
@@ -91,20 +89,18 @@ const HomePage = () => {
         }))
     );
     
-    // Sortare punctaje după dată (cele mai recente primele)
+    // Sortare punctaje dupa data (cele mai recente primele)
     punctaje.sort((a, b) => b.data - a.data);
     
-    // Calculează scorul mediu
     const scorMediu = punctaje.length > 0 
         ? (punctaje.reduce((sum, p) => sum + p.punctaj, 0) / punctaje.length).toFixed(1)
         : 0;
     
-    // Obține categoriile unice din toate subiectele
+    // Obtine categoriile unice din toate subiectele
     const toateCategoriile = subiecteParcurse.flatMap(subiect => 
         subiect.categorii?.flat() || []
     );
     
-    // Numără apariția fiecărei categorii
     const categoriiFrecventa = toateCategoriile.reduce((acc, cat) => {
         acc[cat] = (acc[cat] || 0) + 1;
         return acc;
@@ -133,7 +129,6 @@ const HomePage = () => {
         lastFiveMonths.push(d);
     }
     
-    // Numără subiectele rezolvate în fiecare lună
     const subiectePerLuna = lastFiveMonths.map(month => {
         const count = punctaje.filter(p => 
             p.data.getMonth() === month.getMonth() && 
@@ -160,7 +155,6 @@ const HomePage = () => {
         ]
     };
     
-    // Date pentru progres geografic (se folosesc în continuare datele mock pentru această secțiune)
     const progressData = {
         labels: ['Europa', 'Asia', 'Africa', 'America de Nord', 'America de Sud', 'Australia'],
         datasets: [
@@ -220,10 +214,7 @@ const HomePage = () => {
                         </button>
                     </div>
                 </div>
-                
-                {/* Conținut în funcție de tab-ul activ */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Prima coloană - Clasament */}
                     <div className="lg:col-span-1 bg-white shadow-lg rounded-xl overflow-hidden">
                         <div className="p-6 bg-[#5F5FDF] text-white">
                             <div className="flex items-center gap-3 mb-1">
@@ -302,7 +293,6 @@ const HomePage = () => {
                         </div>
                     </div>
                     
-                    {/* A doua și a treia coloană - Statistici și Grafice */}
                     <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Grafic progres lunar */}
                         <div className="bg-white shadow-lg rounded-xl p-6">
