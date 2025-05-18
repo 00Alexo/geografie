@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import WelcomePage from './WelcomePage';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { FaTrophy, FaBook, FaChartBar, FaMapMarked, FaExchangeAlt } from 'react-icons/fa';
@@ -11,9 +11,34 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointEleme
 const HomePage = () => {
     const { user, isAuthReady } = useAuthContext();
     const [activeTab, setActiveTab] = useState('bacSubiecte'); // 'bacSubiecte' sau 'settera'
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (user) {
+                setLoading(true);
+                try {
+                    const response = await fetch(`http://localhost:4000/api/user/getUserData?username=${user.username}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUserData(data);
+                    } else {
+                        console.error('Failed to fetch user data');
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        };
+        
+        fetchUserData();
+    }, [user]);
     
     // Dacă starea de autentificare nu este încă gata, afișăm un loader
-    if (!isAuthReady) {
+    if (!isAuthReady || loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#f5f7ff]">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#5F5FDF]"></div>
@@ -54,13 +79,79 @@ const HomePage = () => {
         { id: 10, name: "Iulia Radu", school: "Liceul Teoretic Lucian Blaga", score: 9000, maps: 32 },
     ];
     
-    // Date pentru grafice
+    // Prelucrare date reale despre subiecte din userData
+    const subiecteParcurse = userData?.subiecte || [];
+    const totalSubiecte = subiecteParcurse.length;
+    
+    // Extrage punctaje din subiecte
+    const punctaje = subiecteParcurse.flatMap(subiect => 
+        subiect.punctaj.map(p => ({ 
+            punctaj: p.punctaj,
+            data: new Date(p.createdAt)
+        }))
+    );
+    
+    // Sortare punctaje după dată (cele mai recente primele)
+    punctaje.sort((a, b) => b.data - a.data);
+    
+    // Calculează scorul mediu
+    const scorMediu = punctaje.length > 0 
+        ? (punctaje.reduce((sum, p) => sum + p.punctaj, 0) / punctaje.length).toFixed(1)
+        : 0;
+    
+    // Obține categoriile unice din toate subiectele
+    const toateCategoriile = subiecteParcurse.flatMap(subiect => 
+        subiect.categorii?.flat() || []
+    );
+    
+    // Numără apariția fiecărei categorii
+    const categoriiFrecventa = toateCategoriile.reduce((acc, cat) => {
+        acc[cat] = (acc[cat] || 0) + 1;
+        return acc;
+    }, {});
+    
+    // Date pentru graficul de categorii bazate pe datele reale
+    const subiecteTipData = {
+        labels: Object.keys(categoriiFrecventa).map(cat => cat.charAt(0).toUpperCase() + cat.slice(1)),
+        datasets: [
+            {
+                label: 'Progres pe categorii',
+                data: Object.values(categoriiFrecventa),
+                backgroundColor: 'rgba(71, 71, 169, 0.6)',
+                borderColor: '#4747A9',
+                borderWidth: 2,
+            }
+        ]
+    };
+    
+    // Extrage datele din ultimele 5 luni pentru graficul de progres lunar
+    const lastFiveMonths = [];
+    const today = new Date();
+    for (let i = 4; i >= 0; i--) {
+        const d = new Date(today);
+        d.setMonth(d.getMonth() - i);
+        lastFiveMonths.push(d);
+    }
+    
+    // Numără subiectele rezolvate în fiecare lună
+    const subiectePerLuna = lastFiveMonths.map(month => {
+        const count = punctaje.filter(p => 
+            p.data.getMonth() === month.getMonth() && 
+            p.data.getFullYear() === month.getFullYear()
+        ).length;
+        return count;
+    });
+    
+    // Date pentru graficul de progres lunar bazate pe datele reale
     const subiecteData = {
-        labels: ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai'],
+        labels: lastFiveMonths.map(date => {
+            const options = { month: 'long' };
+            return date.toLocaleDateString('ro-RO', options);
+        }),
         datasets: [
             {
                 label: 'Subiecte Rezolvate',
-                data: [5, 8, 12, 7, 15],
+                data: subiectePerLuna,
                 backgroundColor: 'rgba(95, 95, 223, 0.6)',
                 borderColor: '#5F5FDF',
                 borderWidth: 2,
@@ -69,6 +160,7 @@ const HomePage = () => {
         ]
     };
     
+    // Date pentru progres geografic (se folosesc în continuare datele mock pentru această secțiune)
     const progressData = {
         labels: ['Europa', 'Asia', 'Africa', 'America de Nord', 'America de Sud', 'Australia'],
         datasets: [
@@ -83,25 +175,26 @@ const HomePage = () => {
         ]
     };
     
-    const subiecteTipData = {
-        labels: ['Hărți', 'Climatologie', 'Hidrologie', 'Relief', 'Populație', 'Economie'],
-        datasets: [
-            {
-                label: 'Progres pe categorii',
-                data: [85, 65, 70, 90, 60, 75],
-                backgroundColor: 'rgba(71, 71, 169, 0.6)',
-                borderColor: '#4747A9',
-                borderWidth: 2,
-            }
-        ]
-    };
+    // Extrage cele mai recente subiecte rezolvate
+    const recentSubiecte = subiecteParcurse.map(subiect => {
+        const ultimPunctaj = subiect.punctaj.sort((a, b) => 
+            new Date(b.createdAt) - new Date(a.createdAt)
+        )[0];
+        
+        return {
+            id: subiect._id,
+            title: `Subiect ${subiect._id.substring(0, 6)}`,
+            score: ultimPunctaj?.punctaj || 0,
+            date: new Date(ultimPunctaj?.createdAt || subiect.createdAt).toISOString().split('T')[0]
+        };
+    }).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
     
     return (
         <div className="min-h-screen bg-[#f5f7ff] pb-16">
             {/* Header/Banner pentru dashboard */}
             <div className="bg-gradient-to-r from-[#5F5FDF] to-[#4747A9] py-12 px-6 text-white">
                 <div className="max-w-[90%] mx-auto">
-                    <h1 className="text-3xl md:text-4xl font-bold mb-2">Bine ai revenit, {user.username}!</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold mb-2">Bine ai revenit, {userData?.username || user.username}!</h1>
                     <p className="text-[#EDE8F5] opacity-90 text-lg">Continuă să exersezi și să-ți îmbunătățești cunoștințele de geografie.</p>
                 </div>
             </div>
@@ -274,17 +367,25 @@ const HomePage = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div className="bg-[#f5f7ff] rounded-xl p-4 border border-[#e0e6ff]">
                                     <div className="text-sm text-gray-600 mb-1">Total Subiecte Rezolvate</div>
-                                    <div className="text-2xl font-bold text-[#5F5FDF]">47</div>
+                                    <div className="text-2xl font-bold text-[#5F5FDF]">{totalSubiecte}</div>
                                 </div>
                                 
                                 <div className="bg-[#f5f7ff] rounded-xl p-4 border border-[#e0e6ff]">
                                     <div className="text-sm text-gray-600 mb-1">Scor Mediu</div>
-                                    <div className="text-2xl font-bold text-[#5F5FDF]">8.7</div>
+                                    <div className="text-2xl font-bold text-[#5F5FDF]">{scorMediu}/100</div>
                                 </div>
                                 
                                 <div className="bg-[#f5f7ff] rounded-xl p-4 border border-[#e0e6ff]">
                                     <div className="text-sm text-gray-600 mb-1">Rezolvate Săptămâna Aceasta</div>
-                                    <div className="text-2xl font-bold text-[#5F5FDF]">15</div>
+                                    <div className="text-2xl font-bold text-[#5F5FDF]">
+                                        {
+                                            punctaje.filter(p => {
+                                                const oneWeekAgo = new Date();
+                                                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                                                return p.data > oneWeekAgo;
+                                            }).length
+                                        }
+                                    </div>
                                 </div>
                                 
                                 <div className="bg-[#f5f7ff] rounded-xl p-4 border border-[#e0e6ff]">
@@ -297,22 +398,18 @@ const HomePage = () => {
                                 <div className="mt-8">
                                     <h4 className="font-semibold text-[#4747A9] mb-3">Subiecte Recente Rezolvate</h4>
                                     <div className="space-y-3">
-                                        {[
-                                            { title: "Geografia României - Sub. I, BAC 2024", score: 9.5, date: "2024-05-10" },
-                                            { title: "Geografia Europei - Sub. II, BAC 2023", score: 8.2, date: "2024-05-09" },
-                                            { title: "Geografia Mediului - Sub. III, BAC 2024", score: 9.0, date: "2024-05-07" }
-                                        ].map((item, idx) => (
+                                        {recentSubiecte.map((subiect, idx) => (
                                             <div key={idx} className="flex items-center justify-between py-2 border-b border-[#f0f0f8]">
                                                 <div>
-                                                    <div className="font-medium">{item.title}</div>
-                                                    <div className="text-sm text-gray-500">{item.date}</div>
+                                                    <div className="font-medium">{subiect.title}</div>
+                                                    <div className="text-sm text-gray-500">{subiect.date}</div>
                                                 </div>
                                                 <div className={`px-3 py-1 rounded-full font-medium ${
-                                                    item.score >= 9 ? 'bg-green-100 text-green-800' : 
-                                                    item.score >= 7 ? 'bg-blue-100 text-blue-800' : 
+                                                    subiect.score >= 25 ? 'bg-green-100 text-green-800' : 
+                                                    subiect.score >= 15 ? 'bg-blue-100 text-blue-800' : 
                                                     'bg-orange-100 text-orange-800'
                                                 }`}>
-                                                    {item.score}
+                                                    {subiect.score}
                                                 </div>
                                             </div>
                                         ))}

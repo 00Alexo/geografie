@@ -370,7 +370,7 @@ const ViewSubiect = () => {
                                 <FaTimes size={18} />
                             </button>
                         </div>
-                        <div className="mb-6">
+                        <div className='mb-4'>
                             <textarea
                                 autoFocus
                                 value={text}
@@ -379,6 +379,7 @@ const ViewSubiect = () => {
                                 className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5F5FDF] focus:border-transparent resize-none"
                             />
                         </div>
+                        <h3 className="text-sm font-bold text-gray-800 mb-6">Asigura-te ca ai mentionat subiectul, punctul si subpunctul la fiecare trimitere!</h3>
                         <div className="flex justify-end gap-3">
                             <button 
                                 onClick={() => setModalOpen(null)}
@@ -411,6 +412,7 @@ const ViewSubiect = () => {
                             onMouseDown={handleMouseDown}
                         >
                             <h3 className="text-lg font-bold">Whiteboard</h3>
+                            <h3 className="text-sm font-bold">Asigura-te ca ai mentionat subiectul, punctul si subpunctul la fiecare trimitere!</h3>
                             <button 
                                 onClick={() => setModalOpen(null)} 
                                 className="text-white hover:text-gray-200"
