@@ -19,7 +19,7 @@ const HomePage = () => {
             if (user) {
                 setLoading(true);
                 try {
-                    const response = await fetch(`${process.env.REACT_APP_API}api/user/getUserData?username=${user.username}`);
+                    const response = await fetch(`${process.env.REACT_APP_API}/api/user/getUserData?username=${user.username}`);
                     if (response.ok) {
                         const data = await response.json();
                         setUserData(data);
