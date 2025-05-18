@@ -9,6 +9,7 @@ import PosteazaSubiect from './pages/PosteazaSubiect';
 import WelcomePage from './pages/WelcomePage';
 import Subiecte from './pages/Subiecte';
 import ViewSubiect from './pages/ViewSubiect';
+import Game from './pages/Game';
 function App() {
   return (
     <BrowserRouter>
@@ -27,6 +28,7 @@ function App() {
             <Route path = "/subiecte/posteaza" element={<PosteazaSubiect/>}/>
             <Route path="/subiecte/:materie" element={<Subiecte/>}/>
             <Route path="/subiecte/:materie/:subiectId" element={<ViewSubiect/>}/>
+            <Route path="/joc" element={<Game/>}/>
           </Routes>
         </div>
       </div>
