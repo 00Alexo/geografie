@@ -187,6 +187,10 @@ const addToSubiect = async (req, res) => {
 
     const subiectIndex = user.subiecte.findIndex(s => s._id.toString() === id);
 
+    const subiect = await subiecteModel.findById(id);
+    if (!subiect) 
+      return res.status(404).json({ error: "Subiectul nu a fost găsit!" });
+
     if (subiectIndex !== -1) {
       await userModel.updateOne(
         { username, "subiecte._id": id },
@@ -201,7 +205,8 @@ const addToSubiect = async (req, res) => {
               _id: id,
               rezolvari: rezolvari,
               punctaj: [],
-              createdAt: new Date()
+              createdAt: new Date(),
+              categorii: [subiect.categorii]
             }
           }
         }
