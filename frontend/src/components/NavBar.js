@@ -61,7 +61,8 @@ const NavBar = () => {
                 {/* Desktop Navigation Items */}
                 <div className="hidden lg:flex items-center gap-6">
                     <p onClick={() => navigate('/worldMap')} className="text-[#EDE8F5] text-lg cursor-pointer hover:text-white transition-colors">WorldMap</p>
-                    
+                    <Link to="/joc" className="text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all">Settera</Link>
+
                     {/* Subjects Dropdown - Desktop */}
                     <div className="relative subjects-dropdown">
                         <button 
@@ -159,7 +160,8 @@ const NavBar = () => {
                 <div className="absolute top-[80px] left-0 right-0 bg-[#3D52A0] p-4 shadow-lg md:hidden z-40 border-t border-[#7091E6]">
                     <div className="flex flex-col gap-3">
                         <Link to="/worldMap" className="text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all">WorldMap</Link>
-                        
+                        <Link to="/joc" className="text-[#EDE8F5] hover:text-white py-2 px-4 rounded-lg hover:bg-[#7091E6] transition-all">Settera</Link>
+
                         {/* Subjects Dropdown - Mobile */}
                         <div className="relative">
                             <button 
