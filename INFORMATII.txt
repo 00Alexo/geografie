@@ -1,0 +1,8 @@
+GitHub: https://github.com/00Alexo/geografie
+(readme.md pt mai multe informatii)
+
+cont de test:
+username: Alex
+parola: Parola123
+
+site online: geografie.vercel.app
