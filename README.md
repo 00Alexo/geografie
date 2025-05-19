@@ -6,10 +6,10 @@ Aplicație educațională pentru învățarea geografiei, cu focus pe pregătire
 ## Descriere
 
 GeoExplorer este o platformă educațională interactivă ce oferă:
-- Subiecte de bacalaureat la geografie cu rezolvări
-- Statistici personalizate despre progres
-- Hartă interactivă pentru învățarea localizărilor geografice (Settera)
-- Sistem de clasament și competiții între utilizatori
+- ✅ Subiecte de bacalaureat la geografie cu rezolvări
+- 📊 Statistici personalizate despre progres
+- 🗺️ Hartă interactivă pentru localizări geografice (Seterra)
+- 🏆 Sistem de clasament și competiții între utilizatori
 
 ## Instalare și rulare locală
 
@@ -69,15 +69,15 @@ cevalageografie/
 
 Tehnologii utilizate
 Backend:
+    Node.js cu Express
+    MongoDB pentru baza de date
+    JSON Web Tokens pentru autentificare
+    Frontend:
 
-Node.js cu Express
-MongoDB pentru baza de date
-JSON Web Tokens pentru autentificare
 Frontend:
-
-React.js
-Tailwind CSS pentru UI
-Chart.js pentru grafice
-React Unity WebGL pentru integrarea jocurilor
-Contribuții
-Contribuțiile sunt binevenite! Vă rugăm să deschideți un issue pentru discuții înainte de a trimite un pull request.
+    React
+    TailwindCSS
+    ChartJS
+    UnityWebGL
+    VantaJS
+    ThreeJS
