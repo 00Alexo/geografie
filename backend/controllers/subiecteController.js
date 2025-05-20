@@ -42,7 +42,7 @@ const uploadSubiect = async (req, res) => {
         materie,
         descriere,
         categorii, 
-        verified: false,
+        verified: true,
         subiect: {
           data: req.files.subiect[0].buffer,
           contentType: req.files.subiect[0].mimetype,
