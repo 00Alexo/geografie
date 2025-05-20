@@ -14,7 +14,7 @@ export const useSignin = () =>{
         setErrorFields([]);
         setIsLoading(true);
 
-        const response = await fetch(`/api/proxy/api/user/signin`, {
+        const response = await fetch(`${process.env.REACT_APP_API}/api/user/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
